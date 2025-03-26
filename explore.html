@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical News Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f6fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"], select {
+            padding: 0.8rem;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .news-card h2 {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-card p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .news-card a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .news-card a:hover {
+            text-decoration: underline;
+        }
+
+        .source {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #3498db;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .search-filter {
+                flex-direction: column;
+                align-items: center;
+            }
+            input[type="text"], select {
+                width: 100%;
+            }
+        }
+        .back-home {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .back-home:hover {
+        background-color: #0056b3;
+    }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Medical News Hub</h1>
+            <p>Latest Medical News & Updates</p>
+        </header>
+
+        <div class="search-filter">
+            <input type="text" id="searchInput" placeholder="Search medical news...">
+            <select id="categorySelect">
+                <option value="health">All Medical News</option>
+                <option value="disease">Diseases</option>
+                <option value="vaccine">Vaccines</option>
+                <option value="surgery">Surgery</option>
+                <option value="cancer">Cancer</option>
+            </select>
+            <button onclick="fetchNews(1)">Search</button>
+        </div>
+
+        <div id="newsContainer" class="news-grid"></div>
+        <div id="pagination" class="pagination"></div>
+        <button onclick="window.location.href='index.html'" class="back-home">
+            <img src="https://cdn-icons-png.flaticon.com/512/14025/14025439.png" alt="Home" style="width: 24px; height: 24px; vertical-align: middle;">
+        </button></button>
+
+    </div>
+ 
+    <script>
+        const apiKey = '642258b41e99440fa871a4b04fdbd642'; 
+        const newsContainer = document.getElementById('newsContainer');
+        const searchInput = document.getElementById('searchInput');
+        const categorySelect = document.getElementById('categorySelect');
+        const paginationContainer = document.getElementById('pagination');
+        let currentPage = 1;
+        let totalResults = 0;
+
+        const medicalKeywords = [
+            'health', 'medicine', 'medical', 'hospital', 'doctor', 'nurse', 
+            'disease', 'treatment', 'vaccine', 'surgery', 'pharma', 'clinical',
+            'pandemic', 'epidemic', 'cancer', 'therapy', 'research', 'patient'
+        ];
+
+        async function fetchNews(page = 1) {
+            newsContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Loading medical news...</div>';
+            paginationContainer.innerHTML = '';
+
+            const query = searchInput.value.trim() || categorySelect.value;
+            const url = `https://newsapi.org/v2/everything?q=${query}&apiKey=${apiKey}&language=en&pageSize=20&page=${page}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (data.status === 'ok') {
+                    totalResults = data.totalResults;
+                    currentPage = page;
+                    displayNews(filterMedicalNews(data.articles));
+                    setupPagination();
+                } else {
+                    newsContainer.innerHTML = `<div class="loading">Error: ${data.message || 'Failed to fetch news'}</div>`;
+                }
+            } catch (error) {
+                newsContainer.innerHTML = `<div class="loading">Error: ${error.message}. Please check your API key or internet connection.</div>`;
+                console.error('Fetch Error:', error);
+            }
+        }
+
+        function filterMedicalNews(articles) {
+            return articles.filter(article => {
+                const content = `${article.title} ${article.description || ''}`.toLowerCase();
+                return medicalKeywords.some(keyword => content.includes(keyword));
+            });
+        }
+
+        function displayNews(articles) {
+            newsContainer.innerHTML = '';
+            
+            if (articles.length === 0) {
+                newsContainer.innerHTML = '<div class="loading">No medical news found for this query</div>';
+                return;
+            }
+
+            articles.forEach(article => {
+                const newsCard = document.createElement('div');
+                newsCard.className = 'news-card';
+
+                const image = article.urlToImage 
+                    ? `<img src="${article.urlToImage}" alt="${article.title}" onerror="this.style.display='none'">` 
+                    : '';
+
+                newsCard.innerHTML = `
+                    ${image}
+                    <h2>${article.title}</h2>
+                    <p>${article.description || 'No description available'}</p>
+                    <a href="${article.url}" target="_blank">Read More</a>
+                    <div class="source">Source: ${article.source.name} - ${new Date(article.publishedAt).toLocaleDateString()}</div>
+                `;
+
+                newsContainer.appendChild(newsCard);
+            });
+        }
+
+        function setupPagination() {
+            const totalPages = Math.ceil(totalResults / 20);
+            if (totalPages <= 1) return;
+
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => fetchNews(currentPage - 1);
+            paginationContainer.appendChild(prevButton);
+
+            const pageInfo = document.createElement('span');
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            paginationContainer.appendChild(pageInfo);
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => fetchNews(currentPage + 1);
+            paginationContainer.appendChild(nextButton);
+        }
+
+        // Initial load
+        window.onload = () => fetchNews(1);
+
+        // Event listeners
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') fetchNews(1);
+        });
+        categorySelect.addEventListener('change', () => fetchNews(1));
+    </script>
+</body>
+</html>

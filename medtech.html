@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTech Explorer</title>
+    <style>
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        .navbar {
+    background-color: #000000;
+    padding: 10px 15px;
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;  /* Ensures it spans the full width */
+    width: 100%; /* Full-width navbar */
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333333;
+    z-index: 1000; /* Ensures it stays above other elements */
+}
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .navbar .nav-links {
+    display: flex;
+    gap: 50px; /* Adjust spacing for better alignment */
+    margin-left: auto; /* Push nav-links to the right */
+    padding-right: 50px; /* Move links slightly left */
+}
+
+        .navbar a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        .navbar a:hover {
+            opacity: 1;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444444;
+            padding-bottom: 10px;
+        }
+        .featured-stories, .challenges {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .story-card, .challenge-card {
+            background-color: #2b2b2b;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+        .story-card:hover, .challenge-card:hover {
+            transform: translateY(-5px);
+        }
+        .story-card h3, .challenge-card h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+        .story-card p, .challenge-card p {
+            font-size: 0.9rem;
+            color: #d3d3d3;
+        }
+        
+    .suggest-solutions, .submitted-solutions {
+    background: #2b2b2b; /* Black background */
+    color: #fff; /* White text */
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2); /* Subtle white glow */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background: #111;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    width: 300px; /* Reduced width */
+    margin: 0 auto; /* Center the form */
+}
+
+label {
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.1rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+input, textarea {
+    background: #333;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 12px;
+    border-radius: 6px;
+    outline: none;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    width: 100%; /* Ensure inputs fit within form */
+    box-sizing: border-box; /* Prevent padding from breaking width */
+}
+
+input:focus, textarea:focus {
+    border-color: #ddd;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+button {
+    background: #fff;
+    color: #000;
+    padding: 12px 0; /* Reduced horizontal padding */
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.1s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: 120px; /* Reduced button width */
+    align-self: center; /* Center the button within the form */
+}
+
+button:hover {
+    background: #ddd;
+    color: #000;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.section-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #444444;
+    padding-bottom: 10px;
+    margin-top: 80px; /* Adjust this value as needed */
+}
+.back-home {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .back-home:hover {
+        background-color: #0056b3;
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">MedTech Explorer</div>
+        <div class="nav-links">
+            <a href="#featured-stories">Health Innovations</a>
+            <a href="#challenges">Challenges</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="featured-stories" class="section"></div>
+        <div class="section-title">Latest Medical Tech Advancements</div>
+        <div class="featured-stories">
+            <div class="story-card">
+                <h3>AI-Powered Diagnostics</h3>
+                <p>Artificial intelligence is enhancing disease detection and personalized treatment.</p>
+            </div>
+            
+            <div class="story-card">
+                <h3>3D-Printed Organs</h3>
+                <p>Bioprinting is revolutionizing organ transplants with lab-created tissues.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Robotic Surgery</h3>
+                <p>Precision-driven robotic systems are minimizing surgical risks and recovery times.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Wearable Health Tech</h3>
+                <p>Smartwatches and biosensors enable real-time health monitoring and early disease detection.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Telemedicine Expansion</h3>
+                <p>Remote consultations and digital health platforms increase healthcare accessibility globally.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>CRISPR Gene Editing</h3>
+                <p>Gene editing breakthroughs open doors to curing genetic disorders and personalized medicine.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Nanomedicine</h3>
+                <p>Nanoscale drug delivery enhances treatment precision and reduces side effects.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Blockchain in Healthcare</h3>
+                <p>Blockchain technology secures medical records, enhancing data privacy and interoperability.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Augmented Reality in Surgery</h3>
+                <p>AR assists surgeons with real-time 3D visuals for better accuracy during procedures.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Lab-on-a-Chip Technology</h3>
+                <p>Miniaturized diagnostic tools provide rapid, on-the-spot disease detection and analysis.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>AI-Powered Drug Discovery</h3>
+                <p>Machine learning accelerates the development of new drugs and treatment solutions.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Biodegradable Medical Implants</h3>
+                <p>Eco-friendly, dissolvable implants reduce the need for surgical removal.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Digital Twin Technology</h3>
+                <p>Virtual patient models help predict treatment outcomes and personalize care.</p>
+            </div>
+    
+            <div class="story-card">
+                <h3>Smart Prosthetics</h3>
+                <p>AI-integrated prosthetics enhance mobility and mimic natural movements.</p>
+            </div>
+        </div>
+   
+    
+        <div id="challenges" class="section">
+        <div class="section-title">Challenges in Medical Technology</div>
+        <div class="challenges">
+            <div class="challenge-card">
+                <h3>Data Privacy & Security</h3>
+                <p>Ensuring patient data security against cyber threats is a major challenge.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>High Cost of Advanced Treatments</h3>
+                <p>Many technological innovations remain inaccessible due to high costs.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Integration with Healthcare Systems</h3>
+                <p>New technologies must seamlessly integrate with existing hospital infrastructure.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Ethical AI Use</h3>
+                <p>AI-driven healthcare raises concerns about decision-making, bias, and transparency.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Regulatory Hurdles</h3>
+                <p>Strict regulations can delay the approval and adoption of innovative medical technologies.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Data Interoperability Issues</h3>
+                <p>Different healthcare systems and devices struggle to share and interpret medical data efficiently.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Shortage of Skilled Professionals</h3>
+                <p>Implementing and managing new medical technologies requires trained personnel, which many facilities lack.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Cybersecurity Threats</h3>
+                <p>Medical devices and hospital systems are increasingly vulnerable to cyberattacks.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Resistance to Technological Change</h3>
+                <p>Healthcare providers and patients may be hesitant to adopt new technologies due to unfamiliarity.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Ethical Concerns in Genetic Editing</h3>
+                <p>CRISPR and gene editing raise dilemmas regarding human genetic modifications and potential misuse.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>High Maintenance Costs</h3>
+                <p>Advanced medical technologies require continuous maintenance and upgrades, increasing expenses.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Limited Access in Rural Areas</h3>
+                <p>Many remote regions lack the infrastructure to implement and support cutting-edge medical technology.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Limited Battery Life in Wearables</h3>
+                <p>Health-tracking devices and implants often face power limitations, affecting long-term monitoring.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Delayed Emergency Response</h3>
+                <p>Reliance on digital health records and AI systems may slow down life-saving decisions in critical moments.</p>
+            </div>
+        
+            <div class="challenge-card">
+                <h3>Unequal AI Training Data</h3>
+                <p>Medical AI models may be less accurate for underrepresented populations due to biased datasets.</p>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+
+<section class="suggest-solutions">
+    <h2>Suggest a Solution</h2>
+    <p>Have a solution to any of the challenges? Submit it below!</p>
+    <form id="solutionForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <textarea id="solution" placeholder="Describe your solution..." required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+</section>
+
+<section class="submitted-solutions">
+    <h2>Submitted Solutions</h2>
+    <ul id="solutionList"></ul>
+</section>
+<button onclick="window.location.href='index.html'" class="back-home">
+    <img src="https://cdn-icons-png.flaticon.com/512/14025/14025439.png" alt="Home" style="width: 24px; height: 24px; vertical-align: middle;">
+</button></button>
+
+<script>
+document.getElementById("solutionForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    let name = document.getElementById("name").value;
+    let solution = document.getElementById("solution").value;
+
+    if (name && solution) {
+        let submissions = JSON.parse(localStorage.getItem("solutions")) || [];
+        submissions.push({ name, solution });
+        localStorage.setItem("solutions", JSON.stringify(submissions));
+        displaySolutions();
+        document.getElementById("solutionForm").reset();
+    }
+});
+
+function displaySolutions() {
+    let solutionList = document.getElementById("solutionList");
+    solutionList.innerHTML = "";
+    let submissions = JSON.parse(localStorage.getItem("solutions")) || [];
+    
+    submissions.forEach((entry, index) => {
+        let li = document.createElement("li");
+        li.innerHTML = `<strong>${entry.name}:</strong> ${entry.solution}`;
+        solutionList.appendChild(li);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", displaySolutions);
+</script>
+</body>
+</html>

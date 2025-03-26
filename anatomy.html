@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomic - Explore the Human</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+</head>
+<body>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+    
+    body {
+        background: #f4f4f4;
+        color: #333;
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Main Container */
+    .container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    margin: 50px auto;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+    
+    /* Left Section */
+    .left-section {
+        background: #1a1a1a;
+        color: #fff;
+        padding: 60px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center; /* Center content */
+        text-align: center;
+        transition: background 0.3s ease;
+    }
+    
+    .left-section:hover {
+        background: #252525;
+    }
+    
+    .left-section h1 {
+        font-size: 48px;
+        line-height: 1.2;
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+    }
+    
+    .left-section p {
+        font-size: 16px;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+    
+    .learn-more {
+        padding: 12px 30px;
+        border: 2px solid #fff;
+        background: transparent;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .learn-more:hover {
+        background: #fff;
+        color: #1a1a1a;
+    }
+    
+    /* Right Section */
+    .right-section {
+        flex: 1;
+        padding: 60px;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .right-section img {
+        width: 100%;
+        max-width: 350px;
+        filter: grayscale(100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .right-section img:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Sections Container */
+    .sections-container {
+    width: 95%; /* Increase width of the container */
+    max-width: 1300px; /* Wider max width */
+    margin: 0 auto;
+    padding: 50px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Space between sections */
+    align-items: center;
+}
+    
+    /* Body System Section */
+    .body-system {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1100px; /* Increased width */
+    gap: 30px; /* Space between content and model */
+    margin-bottom: 40px; /* Space between sections */
+}
+    
+    .content-left {
+        flex: 1;
+        text-align: center;
+        max-width: 50%;
+    }
+    
+    .content-left h2 {
+        margin-bottom: 15px;
+    }
+    
+    .content-left p {
+        margin-bottom: 15px;
+    }
+    
+    .content-left ul {
+        list-style-position: inside;
+        margin-bottom: 15px;
+    }
+    
+    .model-right {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .skeletal-3d-container,
+    .sketchfab-embed-wrapper iframe {
+        width: 400px;
+        height: 300px;
+        background: black;
+        border-radius: 10px;
+        border: none;
+    }
+    
+    /* Bone List Styling */
+    .bone-list {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 20px 0;
+    }
+    
+    .bone-btn {
+        background: white;
+        color: black;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.3s;
+        border-radius: 5px;
+    }
+    
+    .bone-btn:hover {
+        background: gray;
+    }
+    
+    /* Center Search Bar */
+    #boneSearch {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px;
+        margin: 20px auto;
+        display: block;
+        font-size: 16px;
+        border: 1px solid white;
+        background: black;
+        color: white;
+        border-radius: 5px;
+        text-align: center;
+    }
+    
+    /* Popup Styling */
+    .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+    }
+    
+    .popup-content {
+        position: relative;
+        text-align: center;
+    }
+    
+    .close {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    
+    /* Responsive Design for Smaller Screens */
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+        }
+        .body-system {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .content-left {
+            max-width: 100%;
+        }
+        .model-right {
+            justify-content: center;
+        }
+        .skeletal-3d-container,
+        .sketchfab-embed-wrapper iframe {
+            width: 100%;
+            max-width: 400px;
+        }
+    }
+    .back-home {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .back-home:hover {
+        background-color: #0056b3;
+    }
+</style>    
+    <div class="container">
+        <div class="left-section">
+            <div class="logo">📖 Anatomic</div>
+            <h1>Explore the <br> Human</h1>
+            <p>Discover the intricate workings of the human body, from the skeletal Anatomy.</p>
+           
+            <div class="icons">
+                <span>⚕️</span>
+                <span>🧬</span>
+               
+            </div>
+        </div>
+        <div class="right-section">
+            <img src="human.png" alt="Human Anatomy Illustration">
+        </div>
+    </div>
+    <div id="section-wrapper">
+    <section class="body-system skeletal">
+        <div class="content-left">
+            <h2>Skeletal System</h2>
+            <p>Explore the human skeletal system in 3D. Click on any bone to learn more.</p>
+            <ul>
+                <li>Function: Support, movement, and protection</li>
+                <li>Bones: 206 in an adult human</li>
+                <li>Joints: Enable movement and flexibility</li>
+                <li>Bone Types: Long, short, flat, irregular</li>
+                <li>Role: Produces blood cells in bone marrow</li>
+            </ul>
+        </div>
+        <div class="model-right">
+            <div class="sketchfab-embed-wrapper">
+                <iframe title="Male skeletal system (skeleton)" frameborder="0" allowfullscreen 
+                    mozallowfullscreen="true" webkitallowfullscreen="true" 
+                    allow="autoplay; fullscreen; xr-spatial-tracking" 
+                    src="https://sketchfab.com/models/7693d453195e4c1981d5ce41825cdaf8/embed?ui_controls=0&ui_infos=0&ui_stop=0&ui_fullscreen=1">
+                </iframe>
+            </div>
+        </div>
+    </section>
+    
+    <section class="body-system muscular">
+        <div class="content-left">
+            <h2>Muscular System</h2>
+            <p>The muscular system enables movement and maintains posture through muscle contraction.</p>
+            <ul>
+                <li>Muscle Types: Skeletal, smooth, and cardiac</li>
+                <li>Muscles: Over 600, working in pairs</li>
+                <li>Tendons: Connect muscles to bones</li>
+                <li>Key Functions: Movement, heat production, stability</li>
+                <li>Fibers: Contract to generate force</li>
+            </ul>
+        </div>
+        <div class="model-right">
+            <div class="sketchfab-embed-wrapper">
+                <iframe title="Simplified Male Muscular System" frameborder="0" 
+                allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" 
+                allow="autoplay; fullscreen; xr-spatial-tracking" 
+                src="https://sketchfab.com/models/4f258907dfb6477aa9bf4dfb5833a797/embed?ui_controls=0&ui_infos=0&ui_annotations=0&ui_stop=0&ui_watermark=0">
+                
+            </iframe>
+            
+            
+            </div>
+        </div>
+    </section>
+    
+
+        <section class="body-system circulatory">
+            <div class="content-left">
+                <h2>Circulatory System</h2>
+                <p>The circulatory system delivers oxygen and nutrients via blood flow.</p>
+                <ul>
+                    <li>Heart: Pumps blood throughout the body</li>
+                    <li>Blood Vessels: Arteries, veins, capillaries</li>
+                    <li>Blood: Carries oxygen, nutrients, and waste</li>
+                    <li>Key Functions: Transport, temperature regulation</li>
+                    <li>Circulation: Systemic and pulmonary loops</li>
+                </ul>
+            </div>
+            <div class="model-right">
+                <div class="sketchfab-embed-wrapper">
+                    <iframe title="Circulatory System With Skeleton" frameborder="0" allowfullscreen 
+                    mozallowfullscreen="true" webkitallowfullscreen="true" 
+                    allow="autoplay; fullscreen; xr-spatial-tracking" 
+                    src="https://sketchfab.com/models/4e8e2153db534620b8f596ab2ef1348f/embed?ui_controls=0&ui_infos=0&ui_annotations=0&ui_stop=0&ui_watermark=0">
+            </iframe>
+            
+                </div>
+            </div>
+        </section>
+
+        <section class="body-system nervous">
+            <div class="content-left">
+                <h2>Nervous System</h2>
+                <p>The nervous system coordinates body functions through signals.</p>
+                <ul>
+                    <li>Brain: Controls thought, memory, and emotion</li>
+                    <li>Spinal Cord: Transmits nerve signals</li>
+                    <li>Nerves: Network of signal carriers</li>
+                    <li>Key Functions: Communication, reflexes, sensation</li>
+                    <li>Neurons: Basic units of signal transmission</li>
+                </ul>
+            </div>
+            <div class="model-right">
+                <div class="sketchfab-embed-wrapper">
+                    <iframe title="Human Nervous and Cardiovascular system" frameborder="0" 
+                        allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" 
+                        allow="autoplay; fullscreen; xr-spatial-tracking" 
+                        src="https://sketchfab.com/models/0a9c32d586ba4493ae61f90af4fb102d/embed">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+    </div>
+    </div>
+    <button onclick="window.location.href='index.html'" class="back-home">
+        <img src="https://cdn-icons-png.flaticon.com/512/14025/14025439.png" alt="Home" style="width: 24px; height: 24px; vertical-align: middle;">
+    </button></button>
+    <script>
+        $(document).ready(function() {
+            function checkScroll() {
+                $('.body-system').each(function() {
+                    const elementTop = $(this).offset().top;
+                    const windowBottom = $(window).scrollTop() + $(window).height();
+                    
+                    if (windowBottom > elementTop + 100) {
+                        $(this).addClass('show');
+                    }
+                });
+            }
+
+            $(window).on('scroll', checkScroll);
+            checkScroll();
+        });
+
+        function showBoneInfo(bone) {
+            let descriptions = {
+                "Skull": "The skull protects the brain and supports facial structures.",
+                "Rib Cage": "The rib cage protects vital organs like the heart and lungs.",
+                "Femur": "The femur is the longest and strongest bone in the human body.",
+                "Spine": "The spine supports the body and allows flexibility and movement."
+            };
+
+            document.getElementById("boneTitle").innerText = bone;
+            document.getElementById("boneDescription").innerText = descriptions[bone];
+            document.getElementById("boneInfoPopup").style.display = "block";
+        }
+
+        function closePopup() {
+            document.getElementById("boneInfoPopup").style.display = "none";
+        }
+
+        function searchBone() {
+            let input = document.getElementById("boneSearch").value.toLowerCase();
+            let buttons = document.querySelectorAll(".bone-btn");
+
+            buttons.forEach(btn => {
+                if (btn.innerText.toLowerCase().includes(input)) {
+                    btn.style.display = "inline-block";
+                } else {
+                    btn.style.display = "none";
+                }
+            });
+        }
+        document.querySelectorAll('a[href^="section-wrapper"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href'); 
+        const target = document.querySelector(targetId);
+
+        if (target) {
+            document.querySelector("#sections-wrapper").scrollTo({
+                top: target.offsetTop - document.querySelector("#sections-wrapper").offsetTop,
+                behavior: "smooth"
+            });
+        }
+    });
+});
+
+    </script>
+</body>
+</html>
